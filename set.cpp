@@ -52,7 +52,7 @@ void printSet(const Set& set) {
     cout << "}" << endl;
 }
 
-// Разбиение множества на два с минимальной разницей сумм (динамическое программирование)
+// Разбиение множества на два с минимальной разницей сумм
 void splitSetWithMinDifference(const Set& set, Set& subset1, Set& subset2) {
     int totalSum = 0;
     for (int i = 0; i < set.size; i++) {
@@ -62,7 +62,7 @@ void splitSetWithMinDifference(const Set& set, Set& subset1, Set& subset2) {
     int n = set.size;
     int halfSum = totalSum / 2;
 
-    // Инициализация таблицы для динамического программирования
+    // Инициализация таблицы 
     bool dp[n + 1][halfSum + 1] = {false};
     dp[0][0] = true;
 
