@@ -18,30 +18,49 @@ void Stackcom(Stack& stack, const string& command) {
     }
 }
 
+
 // Обработка команд для множества
 void Setcom(Set& set, const string& command) {
-    if (command.rfind("SETADD", 0) == 0) {
-        int value = stoi(command.substr(7)); // Извлечение значения после "SETADD "
-        setAdd(set, value);
-    } else if (command.rfind("SETDEL", 0) == 0) {
-        int value = stoi(command.substr(7)); // Извлечение значения после "SETDEL "
-        setDel(set, value);
-    } else if (command.rfind("SET_AT", 0) == 0) {
-        int value = stoi(command.substr(7)); // Извлечение значения после "SET_AT "
-        if (setContains(set, value)) {
-            cout << "Элемент " << value << " присутствует в множестве." << endl;
+    try {
+        if (command.rfind("SETADD", 0) == 0) {
+            // Извлечение значения после "SETADD "
+            int value = stoi(command.substr(7));
+            setAdd(set, value);
+        } else if (command.rfind("SETDEL", 0) == 0) {
+            // Извлечение значения после "SETDEL "
+            int value = stoi(command.substr(7));
+            setDel(set, value);
+        } else if (command.rfind("SET_AT", 0) == 0) {
+            // Извлечение значения после "SET_AT "
+            int value = stoi(command.substr(7));
+            if (setContains(set, value)) {
+                cout << "Элемент " << value << " присутствует в множестве." << endl;
+            } else {
+                cout << "Элемент " << value << " отсутствует в множестве." << endl;
+            }
+        } else if (command == "PRINT") {
+            printSet(set); // Вывод множества
+        } else if (command == "SPLIT") {
+            // Создаём два подмножества с той же вместимостью
+            Set subset1(set.capacity);
+            Set subset2(set.capacity);
+
+            // Разбиваем множество на два с минимальной разницей сумм
+            splitSetWithMinDifference(set, subset1, subset2);
+
+            // Выводим результаты разбиения
+            cout << "Первое подмножество: ";
+            printSet(subset1);
+            cout << "Второе подмножество: ";
+            printSet(subset2);
         } else {
-            cout << "Элемент " << value << " отсутствует в множестве." << endl;
+            cout << "Неизвестная команда: " << command << endl;
         }
-    } else if (command == "PRINT") {
-        printSet(set); // Вывод множества
-    } else if (command == "SPLIT") {
-        Set subset1, subset2;
-        splitSetWithMinDifference(set, subset1, subset2); // Разбиение множества
-    } else {
-        cout << "Неизвестная команда: " << command << endl;
+    } catch (const exception& e) {
+        cout << "Ошибка: " << e.what() << endl;
     }
 }
+
 
 // Обработка команд для массива
 void Arraycom(SimpleArray& array, const string& command) {
@@ -79,30 +98,29 @@ void Treecom(TreeNode*& root, const string& command) {
 // Обработка команд для хеш-таблицы
 void HashTablecom(HashTable& table, const string& command) {
     if (command.rfind("HADD", 0) == 0) {
-        size_t spacePos = command.find(' ', 5); // Позиция пробела после ключа
-        string employee = command.substr(5, spacePos - 5); // Извлечение сотрудника
-        string manager = command.substr(spacePos + 1);     // Извлечение менеджера
-
-        // Добавляем сотрудника и менеджера в иерархию
-        hashTableInsert(table, manager, 1); // Менеджеру добавляем одного подчинённого
-        hashTableInsert(table, employee, 0); // Убедимся, что сотрудник добавлен с 0 подчинёнными
-        cout << "Сотрудник \"" << employee << "\" добавлен с менеджером \"" << manager << "\"." << endl;
-    } else if (command == "PRINT") {
-        cout << "Содержимое хеш-таблицы:" << endl;
-        printHashTable(table);
+        size_t pos = command.find(' ', 5);
+        if (pos != string::npos) {
+            string employee = command.substr(5, pos - 5);
+            string manager = command.substr(pos + 1);
+            hashTableInsert(table, employee, hashFunction(manager, table.capacity));
+            cout << "Сотрудник \"" << employee << "\" добавлен с менеджером \"" << manager << "\"." << endl;
+        }
+    } else if (command == "HPRINT") {
+        printSubordinateCounts(table); // Вызов функции подсчёта подчинённых
     } else {
-        cout << "Неизвестная команда: " << command << endl;
+        cout << "Неизвестная команда для хеш-таблицы: " << command << endl;
     }
 }
 
+
 // Главная функция
 int main() {
-    Set mySet;                // Инициализация множества
+    Set mySet(100);                // Инициализация множества
     Stack myStack = {nullptr}; // Инициализация стека
     SimpleArray myArray;      // Инициализация массива
     TreeNode* myTree = nullptr; // Инициализация дерева
-    HashTable hashTable;
-    initHashTable(hashTable, 20); // Инициализация хеш-таблицы с вместимостью 20
+    HashTable hashTable(10); // Инициализация с вместимостью 10
+    initHashTable(hashTable, 10); // Инициализация хеш-таблицы с вместимостью 20
 
     cout << "Введите команду. Для выхода введите EXIT." << endl;
     string command;
