@@ -1,5 +1,12 @@
 #include "header.h"
 
+SimpleArray::SimpleArray() : size(0), capacity(100) {
+    for (int i = 0; i < 100; ++i) {
+        data[i] = 0;
+    }
+}
+
+
 // Добавление элемента в массив
 void arrayAdd(SimpleArray& array, int value) {
     if (array.size < array.capacity) {
