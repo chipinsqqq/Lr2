@@ -35,6 +35,8 @@ void snakeOrderTraversal(TreeNode* root) {
     enqueue(queue, root);
 
     bool leftToRight = true; // Флаг для чередования направлений
+    string result = "Результат: ";
+
     while (!isQueueEmpty(queue)) {
         int levelSize = getQueueSize(queue); // Количество узлов на текущем уровне
         int* levelValues = new int[levelSize];
@@ -55,16 +57,22 @@ void snakeOrderTraversal(TreeNode* root) {
             if (node->right) enqueue(queue, node->right);
         }
 
-        // Печать текущего уровня
+        // Формируем строку для текущего уровня
         for (int i = 0; i < levelSize; i++) {
-            cout << levelValues[i] << " ";
+            result += to_string(levelValues[i]);
+            if (!(isQueueEmpty(queue) && i == levelSize - 1)) {
+                result += " – ";
+            }
         }
-        cout << endl;
 
         delete[] levelValues; // Освобождаем память
         leftToRight = !leftToRight; // Меняем направление
     }
+
+    // Выводим итоговую строку
+    cout << result << endl;
 }
+
 
 // Освобождение памяти дерева
 void freeTree(TreeNode* root) {
