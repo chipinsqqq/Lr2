@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <sstream>
 using namespace std;
 
 // Узел стека
@@ -11,7 +10,7 @@ struct StackNode {
 
 // Стек
 struct Stack {
-    StackNode* top; // Указатель на вершину стека
+    StackNode* top;
 };
 
 // Функции для работы со стеком
@@ -25,34 +24,36 @@ string infixToPostfix(const string& expression);
 string evaluatePostfix(const string& expression);
 string LogicalPostfix(const string& expression);
 
+// Структура множества
 struct Set {
-    int data[100]; // Массив фиксированного размера
-    int size;      // Текущий размер множества
-    int capacity;  // Вместимость множества
+    string* keys;
+    int capacity;
+    int size;
 
-    Set() : size(0), capacity(100) {} // Конструктор для инициализации множества
+    Set(int cap); // Конструктор
+    ~Set();       // Деструктор
 };
 
 // Функции для работы с множеством
-void setAdd(Set& set, int value); // Добавление элемента в множество
-void setDel(Set& set, int value); // Удаление элемента из множества
-bool setContains(const Set& set, int value); // Проверка наличия элемента в множестве
-void printSet(const Set& set); // Вывод множества
-void splitSetWithMinDifference(const Set& set, Set& subset1, Set& subset2); // Разбиение множества
+void setAdd(Set& set, int value);
+void setDel(Set& set, int value);
+bool setContains(const Set& set, int value);
+void printSet(const Set& set);
+void splitSetWithMinDifference(const Set& set, Set& subset1, Set& subset2);
 
 // Структура для массива
 struct SimpleArray {
-    int data[100]; // Массив фиксированного размера
-    int size;      // Текущий размер массива
-    int capacity;  // Вместимость массива
+    int data[100];
+    int size;
+    int capacity;
 
-    SimpleArray() : size(0), capacity(100) {} // Конструктор для инициализации массива
+    SimpleArray();
 };
 
 // Функции для работы с массивом
-void arrayAdd(SimpleArray& array, int value); // Добавление элемента
-void printArray(const SimpleArray& array);   // Вывод массива
-void findSubarraysWithSum(const SimpleArray& array, int targetSum); // Поиск подмассивов с суммой
+void arrayAdd(SimpleArray& array, int value);
+void printArray(const SimpleArray& array);
+void findSubarraysWithSum(const SimpleArray& array, int targetSum);
 
 // Узел двоичного дерева
 struct TreeNode {
@@ -91,17 +92,30 @@ struct HashTable {
     int* values;    // Массив значений
     int capacity;   // Вместимость таблицы
     int size;       // Текущий размер таблицы
+
+    HashTable() : keys(nullptr), values(nullptr), capacity(0), size(0) {}
+    HashTable(int cap) : capacity(cap), size(0) {
+        keys = new string[capacity];
+        values = new int[capacity];
+        for (int i = 0; i < capacity; i++) {
+            keys[i] = "";
+            values[i] = 0;
+        }
+    }
+    ~HashTable() {
+        delete[] keys;
+        delete[] values;
+    }
 };
 
-// Инициализация хеш-таблицы
-void initHashTable(HashTable& table, int capacity);
-// Хеш-функция
-int hashFunction(const string& key, int capacity);
-// Добавление или обновление элемента в хеш-таблице
-void hashTableInsert(HashTable& table, const string& key, int value);
-// Получение значения из хеш-таблицы
-int hashTableGet(const HashTable& table, const string& key);
-// Вывод содержимого хеш-таблицы
-void printHashTable(const HashTable& table);
-// Удаление хеш-таблицы
+// Функции для работы с хеш-таблицей
 void deleteHashTable(HashTable& table);
+void initHashTable(HashTable& table, int capacity);
+int hashFunction(const string& key, int capacity);
+void hashTableInsert(HashTable& table, const string& key, int value);
+int hashTableGet(const HashTable& table, const string& key); // Определите, если потребуется
+int hashTableGet(const HashTable& table, const string& key);
+
+// Функции для подсчёта подчинённых
+int countSubordinates(const HashTable& table, const string& manager, int* results, bool* visited);
+void printSubordinateCounts(const HashTable& table);
